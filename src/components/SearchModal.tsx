@@ -1,23 +1,24 @@
 import React, { useState, useMemo } from 'react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
-import { PRODUCTS } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 
 export const SearchModal: React.FC = () => {
   const { isSearchOpen, closeSearch, navigateTo } = useNavigation();
+  const { products } = useProducts();
   const [term, setTerm] = useState('');
 
   const filteredProducts = useMemo(() => {
     if (!term.trim()) return [];
     const lower = term.toLowerCase();
-    return PRODUCTS.filter(
+    return products.filter(
       (p) =>
         p.name.toLowerCase().includes(lower) ||
         p.categoryLabel.toLowerCase().includes(lower) ||
         p.productType.toLowerCase().includes(lower) ||
         p.shortDescription.toLowerCase().includes(lower)
     ).slice(0, 6);
-  }, [term]);
+  }, [term, products]);
 
   if (!isSearchOpen) return null;
 

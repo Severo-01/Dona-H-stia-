@@ -1,6 +1,6 @@
 import React from 'react';
 import heroImage from '../assets/images/dona_hestia_hero_1789431461850.jpg';
-import crestImage from '../assets/images/dona_hestia_crest_1789431489037.jpg';
+import crestImage from '../assets/images/dona_hestia_logo_crest_1790093955841.jpg';
 import { useNavigation } from '../context/NavigationContext';
 
 export const AboutPage: React.FC = () => {

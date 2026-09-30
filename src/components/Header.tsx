@@ -22,6 +22,7 @@ export const Header: React.FC = () => {
     { label: 'CATEGORIAS', path: '/categorias' },
     { label: 'SOBRE', path: '/sobre' },
     { label: 'CONTATO', path: '/contato' },
+    { label: 'DESENVOLVEDOR', path: '/desenvolvedor' },
   ];
 
   const handleNavClick = (path: string) => {

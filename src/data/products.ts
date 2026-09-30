@@ -1,6 +1,6 @@
 import { Product } from '../types';
-import cookerMainImg from '../assets/images/black_pressure_cooker_1789434212688.jpg';
-import cookerLifestyleImg from '../assets/images/pressure_cooker_kitchen_1789434221609.jpg';
+import cookerMainImg from '../assets/images/kian_pressure_cooker_official_1790094832015.jpg';
+import cookerLifestyleImg from '../assets/images/kian_pressure_cooker_open_1790094855163.jpg';
 import grillClosedImg from '../assets/images/kian_grill_fechada_1789444283147.jpg';
 import omeleteiraOpenImg from '../assets/images/omeleteira_open_1789476847078.jpg';
 import omeleteiraClosedImg from '../assets/images/omeleteira_closed_1789476864647.jpg';
@@ -15,18 +15,21 @@ export const PRODUCTS: Product[] = [
   {
     id: 'prod-panela-pressao-eletrica-5l-preta',
     slug: 'panela-de-pressao-eletrica-digital-5-litros-preta',
-    name: 'Panela de Pressão Elétrica Digital 5 Litros Preta',
-    brand: 'Dona Héstia Linha Cozinha',
+    name: 'Panela de Pressão Elétrica Digital 5 Litros Kian Preta',
+    brand: 'Kian',
     category: 'cozinha',
     categoryLabel: 'Cozinha',
-    productType: 'Panela de Pressão Elétrica',
+    productType: 'Eletrodomésticos',
     price: 299.00,
     priceMax: 349.00,
     priceRangeLabel: 'R$ 299,00 a R$ 349,00',
     badge: 'Destaque Oficial',
-    shortDescription: 'Cozimento rápido, silencioso e seguro com painel digital inteligente, cuba antiaderente de 5 litros e acabamento premium em preto com detalhes em aço.',
-    fullDescription: 'A Panela de Pressão Elétrica Digital 5 Litros Preta foi desenvolvida para aliar máxima segurança, praticidade e requinte ao preparo culinário diário. Equipada com display digital intuitivo, timer programável e múltiplos dispositivos de segurança integrados, ela prepara desde carnes e feijão até risotos, sopas e sobremesas no ponto perfeito, preservando o valor nutritivo e o sabor dos alimentos de forma rápida e silenciosa.',
+    rating: 4.9,
+    reviewCount: 348,
+    shortDescription: 'Fabricada pela consagrada marca Kian, oferece cozimento rápido, silencioso e seguro com painel digital inteligente, cuba antiaderente de 5 litros e acabamento premium em preto.',
+    fullDescription: 'A Panela de Pressão Elétrica Digital 5 Litros Kian Preta foi desenvolvida pela Kian para aliar máxima segurança, praticidade e requinte ao preparo culinário diário. Equipada com display digital intuitivo, timer programável de até 24h e múltiplos dispositivos de segurança certificados, ela prepara desde carnes e feijão até risotos, sopas e sobremesas no ponto perfeito, preservando o valor nutritivo e o sabor dos alimentos de forma rápida e silenciosa.',
     features: [
+      'Produto oficial da marca Kian: tecnologia de ponta, durabilidade e confiabilidade',
       'Capacidade ideal de 5 Litros: proporção perfeita para toda a família',
       'Painel digital multifuncional com display de LED e receitas pré-programadas',
       'Sistema multifásico de segurança com travas automáticas e controle de pressão',
@@ -35,6 +38,8 @@ export const PRODUCTS: Product[] = [
       'Design refinado em preto fosco com detalhes em aço escovado anti-marcas',
     ],
     specifications: {
+      'Marca': 'Kian',
+      'Modelo': 'Panela de Pressão Elétrica Digital 5L',
       'Capacidade': '5 Litros',
       'Cor': 'Preta com detalhes em aço escovado',
       'Painel': 'Digital com display LED intuitivo',
@@ -66,11 +71,13 @@ export const PRODUCTS: Product[] = [
     brand: 'Dona Héstia Linha Cozinha',
     category: 'cozinha',
     categoryLabel: 'Cozinha',
-    productType: 'Sanduicheira e Grill',
+    productType: 'Eletrodomésticos',
     price: 69.90,
     priceMax: 79.99,
     priceRangeLabel: 'R$ 69,90 a R$ 79,99',
     badge: 'Novo Lançamento',
+    rating: 4.8,
+    reviewCount: 192,
     shortDescription: 'Chapas duplas onduladas antiaderentes que possibilitam o preparo sem óleo, tostando e grelhando com rapidez e praticidade.',
     fullDescription: 'A Sanduicheira Grill Antiaderente Kian foi desenvolvida para proporcionar máxima praticidade e refeições mais saudáveis no dia a dia. Com revestimento antiaderente de alta qualidade que dispensa o uso de óleo, ela tosta e grelha por igual em ambos os lados, sendo ideal para misto quente, torradinhas, panquecas doces, frangos e legumes grelhados. Conta com alça isotérmica com trava e sinalizadores luminoso de funcionamento.',
     features: [
@@ -112,9 +119,11 @@ export const PRODUCTS: Product[] = [
     brand: 'Dona Héstia Linha Cozinha',
     category: 'cozinha',
     categoryLabel: 'Cozinha',
-    productType: 'Omeleteira Elétrica',
+    productType: 'Eletrodomésticos',
     price: 115.90,
     badge: 'Praticidade Diária',
+    rating: 4.9,
+    reviewCount: 145,
     shortDescription: 'Prepara 2 omeletes perfeitos, cremosos e fofinhos simultaneamente, com placas antiaderentes que não grudam e dispensam óleo.',
     fullDescription: 'A Omeleteira Elétrica Mr Chef foi criada para transformar seu café da manhã, almoço rápido e lanches saudáveis em uma experiência deliciosa e sem sujeira. Equipada com duas cavidades com revestimento antiaderente premium de alta performance, ela cozinha uniformemente ambos os lados sem a necessidade de virar no fogo. Ideal para omeletes tradicionais com recheios variados, calzones, ovos poché, tortilhas e crepiocas de preparo rápido e prático.',
     features: [
@@ -156,10 +165,12 @@ export const PRODUCTS: Product[] = [
     brand: 'Multilaser',
     category: 'cozinha',
     categoryLabel: 'Cozinha',
-    productType: 'Fritadeira Elétrica Sem Óleo',
+    productType: 'Eletrodomésticos',
     price: 299.00,
     priceRangeLabel: 'Aprox. R$ 299,00',
     badge: 'Oferta Shopee',
+    rating: 4.7,
+    reviewCount: 280,
     shortDescription: 'Crocância e sabor com até 80% menos gordura. Design vibrante em vermelho rubi, cesto antiaderente removível e alta potência em 220V.',
     fullDescription: 'A Air Fryer Fritadeira Elétrica sem Óleo Multilaser Vermelha 220V foi projetada para levar praticidade, saúde e um toque de elegância moderna para sua cozinha. Através da circulação de ar quente em alta velocidade a 360°, ela doura e assa carnes, batatas, petiscos e legumes sem precisar de uma única gota de óleo, mantendo a maciez por dentro e a crocância irresistível por fora. Seu cesto antiaderente com trava de segurança é fácil de limpar e pode ir à lava-louças.',
     features: [
@@ -188,6 +199,7 @@ export const PRODUCTS: Product[] = [
     images: [
       airFryerFriesOpenImg,
     ],
+    availableVoltages: ['220V'],
     highlight: false,
     buyUrl: SHOPEE_AIRFRYER_URL,
     platform: 'Shopee',

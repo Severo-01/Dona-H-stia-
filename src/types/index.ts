@@ -3,7 +3,7 @@ export interface Product {
   slug: string;
   name: string;
   brand: string;
-  category: ProductCategory;
+  category: string;
   categoryLabel: string;
   productType: string;
   price: number;
@@ -11,28 +11,32 @@ export interface Product {
   priceRangeLabel?: string;
   originalPrice?: number;
   badge?: string;
+  rating?: number;
+  reviewCount?: number;
   shortDescription: string;
   fullDescription: string;
   features: string[];
   specifications: Record<string, string>;
-  dimensions: {
+  dimensions?: {
     width: string;
     height: string;
     depth: string;
     weight: string;
   };
   images: string[];
+  availableVoltages?: string[];
   highlight?: boolean;
   buyUrl?: string;
   platform?: string;
   isDemo?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export type ProductCategory =
-  | 'cozinha';
+export type ProductCategory = string;
 
 export interface CategoryInfo {
-  id: ProductCategory;
+  id: string;
   slug: string;
   name: string;
   tagline: string;
@@ -46,3 +50,4 @@ export type SortOption =
   | 'price-asc'
   | 'price-desc'
   | 'newest';
+

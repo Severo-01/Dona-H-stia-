@@ -1,5 +1,5 @@
 import React from 'react';
-import crestImage from '../assets/images/dona_hestia_crest_1789431489037.jpg';
+import crestImage from '../assets/images/dona_hestia_logo_crest_1790093955841.jpg';
 
 interface LogoProps {
   variant?: 'light' | 'dark'; // 'dark' = for dark backgrounds (white/gold text), 'light' = for light backgrounds (navy text)
@@ -44,15 +44,15 @@ export const Logo: React.FC<LogoProps> = ({
       aria-label="Dona Héstia - O Coração do Seu Lar"
     >
       {/* Official Medallion Emblem */}
-      <div className={`relative ${emblemSizes[size]} rounded-full overflow-hidden shrink-0 border border-[#C89A4B]/60 shadow-xs transition-transform duration-300 group-hover:scale-105`}>
+      <div className={`relative ${emblemSizes[size]} rounded-full overflow-hidden shrink-0 ring-1 ring-[#C89A4B]/80 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-[#E0B866]`}>
         <img
           src={crestImage}
-          alt="Emblema Dona Héstia"
-          className="w-full h-full object-cover"
+          alt="Emblema Oficial Dona Héstia"
+          className="w-full h-full object-cover transform scale-105"
           referrerPolicy="no-referrer"
         />
         {/* Subtle gold sheen overlay */}
-        <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-[#C89A4B]/30 pointer-events-none" />
+        <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-white/10 pointer-events-none" />
       </div>
 
       {/* Typography */}

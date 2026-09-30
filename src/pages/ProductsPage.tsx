@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Product, SortOption } from '../types';
-import { PRODUCTS } from '../data/products';
-import { CATEGORIES } from '../data/categories';
 import { ProductGrid } from '../components/ProductGrid';
 import { useNavigation } from '../context/NavigationContext';
+import { useProducts } from '../context/ProductContext';
 import { Filter, SlidersHorizontal, X } from 'lucide-react';
 
 export const ProductsPage: React.FC = () => {
   const { selectedCategoryFilter, setSelectedCategoryFilter, searchQuery, setSearchQuery } = useNavigation();
+  const { products, categories } = useProducts();
 
   const [selectedCategory, setSelectedCategory] = useState<string>(
     selectedCategoryFilter || 'all'
@@ -28,19 +28,23 @@ export const ProductsPage: React.FC = () => {
   // Unique product types and brands
   const productTypes = useMemo(() => {
     const types = new Set<string>();
-    PRODUCTS.forEach((p) => types.add(p.productType));
+    products.forEach((p) => {
+      if (p.productType) types.add(p.productType);
+    });
     return Array.from(types);
-  }, []);
+  }, [products]);
 
   const brands = useMemo(() => {
     const b = new Set<string>();
-    PRODUCTS.forEach((p) => b.add(p.brand));
+    products.forEach((p) => {
+      if (p.brand) b.add(p.brand);
+    });
     return Array.from(b);
-  }, []);
+  }, [products]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let list = [...PRODUCTS];
+    let list = [...products];
 
     // Search query
     if (searchQuery.trim()) {
@@ -190,7 +194,7 @@ export const ProductsPage: React.FC = () => {
               className="text-xs font-sans px-3 py-2 bg-[#F5F0E8] border border-[#071A2B]/15 text-[#071A2B] rounded-xs focus:outline-hidden focus:border-[#C89A4B]"
             >
               <option value="all">Todas as Categorias</option>
-              {CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <option key={c.id} value={c.slug}>
                   {c.name}
                 </option>
@@ -282,7 +286,7 @@ export const ProductsPage: React.FC = () => {
                 className="w-full text-xs font-sans p-2.5 bg-[#F5F0E8] border border-[#071A2B]/15 text-[#071A2B]"
               >
                 <option value="all">Todas as Categorias</option>
-                {CATEGORIES.map((c) => (
+                {categories.map((c) => (
                   <option key={c.id} value={c.slug}>
                     {c.name}
                   </option>
@@ -344,7 +348,7 @@ export const ProductsPage: React.FC = () => {
 
         {/* Count Summary */}
         <div className="mb-6 flex justify-between items-center text-xs font-sans text-[#1C242B]/60">
-          <span>Mostrando {filteredProducts.length} de {PRODUCTS.length} {PRODUCTS.length === 1 ? 'produto' : 'produtos'}</span>
+          <span>Mostrando {filteredProducts.length} de {products.length} {products.length === 1 ? 'produto' : 'produtos'}</span>
           <span className="text-[11px] text-[#8A6726]">Catálogo oficial Dona Héstia</span>
         </div>
 

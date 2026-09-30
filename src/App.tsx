@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationProvider, useNavigation } from './context/NavigationContext';
+import { ProductProvider } from './context/ProductContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { SearchModal } from './components/SearchModal';
@@ -11,6 +12,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { TermsPage } from './pages/TermsPage';
+import { DeveloperPage } from './pages/DeveloperPage';
 
 const AppContent: React.FC = () => {
   const { currentPath } = useNavigation();
@@ -29,6 +31,9 @@ const AppContent: React.FC = () => {
     if (currentPath.startsWith('/produto/')) {
       const slug = currentPath.replace('/produto/', '');
       return <ProductDetailPage slug={slug} />;
+    }
+    if (currentPath.startsWith('/desenvolvedor') || currentPath.startsWith('/developer')) {
+      return <DeveloperPage />;
     }
     if (currentPath === '/sobre') {
       return <AboutPage />;
@@ -66,8 +71,11 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <NavigationProvider>
-      <AppContent />
-    </NavigationProvider>
+    <ProductProvider>
+      <NavigationProvider>
+        <AppContent />
+      </NavigationProvider>
+    </ProductProvider>
   );
 }
+

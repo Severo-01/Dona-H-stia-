@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { PRODUCTS } from '../data/products';
 import { useNavigation } from '../context/NavigationContext';
+import { useProducts } from '../context/ProductContext';
 import {
   ArrowLeft,
   Share2,
   ExternalLink,
   MessageCircle,
   CheckCircle,
+  Star,
+  Edit3,
 } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 
@@ -16,21 +18,42 @@ interface ProductDetailPageProps {
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) => {
   const { navigateTo } = useNavigation();
+  const { products, getProductBySlug } = useProducts();
 
   const product = useMemo(() => {
-    return PRODUCTS.find((p) => p.slug === slug) || PRODUCTS[0];
-  }, [slug]);
+    return getProductBySlug(slug) || products[0];
+  }, [slug, getProductBySlug, products]);
+
+  const availableVoltages = useMemo(() => {
+    if (product.availableVoltages && product.availableVoltages.length > 0) {
+      return product.availableVoltages;
+    }
+    // Check if specifications specify a single voltage
+    if (product.specifications && product.specifications['Voltagem'] === '220V') return ['220V'];
+    if (product.specifications && product.specifications['Voltagem'] === '127V') return ['127V'];
+    if (product.specifications && product.specifications['Voltagem']) return [product.specifications['Voltagem']];
+    // If explicitly defined as empty array, respect that the product has no voltage
+    if (product.availableVoltages && product.availableVoltages.length === 0) return [];
+    return [];
+  }, [product]);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedVoltage, setSelectedVoltage] = useState('220V');
+  const [selectedVoltage, setSelectedVoltage] = useState(() => availableVoltages[0] || '');
   const [isCopied, setIsCopied] = useState(false);
+
+  // Sync selectedVoltage when product changes
+  React.useEffect(() => {
+    if (availableVoltages.length > 0 && !availableVoltages.includes(selectedVoltage)) {
+      setSelectedVoltage(availableVoltages[0]);
+    }
+  }, [availableVoltages, selectedVoltage]);
 
   // Related products from same category
   const relatedProducts = useMemo(() => {
-    return PRODUCTS.filter(
+    return products.filter(
       (p) => p.category === product.category && p.id !== product.id
     ).slice(0, 4);
-  }, [product]);
+  }, [products, product]);
 
   const formattedPrice = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -61,6 +84,24 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
   return (
     <div className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 bg-[#F5F0E8] min-h-screen">
       <div className="max-w-7xl mx-auto">
+        {/* Active Developer Quick Action Shortcut */}
+        {typeof window !== 'undefined' && sessionStorage.getItem('dona_hestia_dev_auth_v1') === 'true' && (
+          <div className="mb-4 p-3 bg-[#071A2B] text-[#F5F0E8] rounded-xs flex flex-wrap items-center justify-between gap-3 text-xs font-sans shadow-md border border-[#C89A4B]/40">
+            <span className="flex items-center gap-2 text-[#E0B866] font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Sessão de Desenvolvedor Ativa
+            </span>
+            <button
+              type="button"
+              onClick={() => navigateTo(`/desenvolvedor?edit=${product.id}`)}
+              className="px-3.5 py-1.5 bg-[#C89A4B] hover:bg-[#E0B866] text-[#071A2B] font-semibold text-[11px] uppercase tracking-wider rounded-xs transition-colors flex items-center gap-1.5 shadow-xs"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Editar este produto no Painel</span>
+            </button>
+          </div>
+        )}
+
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center justify-between py-4 mb-6 border-b border-[#071A2B]/10 text-xs font-sans text-[#1C242B]/70">
           <button
@@ -168,16 +209,43 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                       Oferta {product.platform}
                     </span>
                   )}
-                  <span className="text-xs font-sans text-[#1C242B]/50">
-                    {product.brand}
+                  <span className="px-2 py-0.5 rounded-xs bg-[#071A2B]/5 border border-[#071A2B]/15 text-xs font-sans font-medium text-[#071A2B]">
+                    Marca: {product.brand}
                   </span>
                 </div>
               </div>
 
               {/* Title */}
-              <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#071A2B] font-light leading-tight mb-4">
+              <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#071A2B] font-light leading-tight mb-2">
                 {product.name}
               </h1>
+
+              {/* Rating & Reviews Bar */}
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <div className="flex items-center text-[#C89A4B]">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className={`w-4 h-4 ${
+                        (product.rating || 5) >= s
+                          ? 'fill-[#C89A4B] text-[#C89A4B]'
+                          : (product.rating || 5) >= s - 0.5
+                          ? 'fill-[#C89A4B]/50 text-[#C89A4B]'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs font-sans font-bold text-[#071A2B]">
+                  {product.rating !== undefined ? product.rating.toFixed(1) : '5.0'}
+                </span>
+                <span className="text-xs font-sans text-[#1C242B]/60">
+                  ({product.reviewCount || 120} avaliações verificadas)
+                </span>
+                <span className="text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs border border-emerald-200 font-medium">
+                  Compra Segura Garantida
+                </span>
+              </div>
 
               {/* Price block */}
               <div className="py-4 border-y border-[#071A2B]/10 my-4">
@@ -213,28 +281,37 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 {product.shortDescription}
               </p>
 
-              {/* Configuration options (Voltagem) */}
-              <div className="mb-6 space-y-3">
-                <label className="text-xs font-sans uppercase tracking-wider text-[#1C242B]/70 block font-medium">
-                  Voltagem do Eletrodoméstico
-                </label>
-                <div className="flex gap-3">
-                  {['127V', '220V'].map((volt) => (
-                    <button
-                      key={volt}
-                      type="button"
-                      onClick={() => setSelectedVoltage(volt)}
-                      className={`flex-1 py-2.5 px-4 text-xs font-sans uppercase tracking-wider border rounded-xs transition-colors ${
-                        selectedVoltage === volt
-                          ? 'border-[#071A2B] bg-[#071A2B] text-white font-medium'
-                          : 'border-[#071A2B]/20 bg-transparent text-[#071A2B] hover:border-[#071A2B]'
-                      }`}
-                    >
-                      {volt}
-                    </button>
-                  ))}
+              {/* Configuration options (Voltagem) - apenas se o produto possuir voltagem */}
+              {availableVoltages.length > 0 && (
+                <div className="mb-6 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-sans uppercase tracking-wider text-[#1C242B]/70 block font-medium">
+                      Voltagem do Eletrodoméstico
+                    </label>
+                    {availableVoltages.length === 1 && (
+                      <span className="text-[10px] font-sans text-amber-700 bg-amber-50 px-2 py-0.5 rounded-xs border border-amber-200">
+                        Disponível exclusivamente em {availableVoltages[0]}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    {availableVoltages.map((volt) => (
+                      <button
+                        key={volt}
+                        type="button"
+                        onClick={() => setSelectedVoltage(volt)}
+                        className={`flex-1 py-2.5 px-4 text-xs font-sans uppercase tracking-wider border rounded-xs transition-colors ${
+                          selectedVoltage === volt
+                            ? 'border-[#071A2B] bg-[#071A2B] text-white font-medium'
+                            : 'border-[#071A2B]/20 bg-transparent text-[#071A2B] hover:border-[#071A2B]'
+                        }`}
+                      >
+                        {volt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Quantity and Actions */}
               <div className="space-y-3 pt-2">

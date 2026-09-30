@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { useNavigation } from '../context/NavigationContext';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star, Edit3 } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -44,6 +44,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
         )}
+
+        {/* Developer Quick Edit Shortcut */}
+        {typeof window !== 'undefined' && sessionStorage.getItem('dona_hestia_dev_auth_v1') === 'true' && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateTo(`/desenvolvedor?edit=${product.id}`);
+            }}
+            title="Editar este produto no modo desenvolvedor"
+            className="absolute top-3 right-3 p-1.5 bg-[#071A2B]/90 hover:bg-[#C89A4B] text-[#E0B866] hover:text-[#071A2B] rounded-xs border border-[#C89A4B]/40 transition-colors shadow-xs z-10 flex items-center gap-1 text-[10px] font-sans font-medium uppercase"
+          >
+            <Edit3 className="w-3 h-3" />
+            <span className="hidden group-hover:inline">Editar</span>
+          </button>
+        )}
       </div>
 
       {/* Product Info */}
@@ -60,9 +76,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Product Name */}
-          <h3 className="font-serif text-base sm:text-lg text-[#071A2B] font-medium leading-snug group-hover:text-[#C89A4B] transition-colors duration-200 line-clamp-2 mb-2">
+          <h3 className="font-serif text-base sm:text-lg text-[#071A2B] font-medium leading-snug group-hover:text-[#C89A4B] transition-colors duration-200 line-clamp-2 mb-1.5">
             {product.name}
           </h3>
+
+          {/* Rating & Platform */}
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <div className="flex items-center text-[#C89A4B]">
+              <Star className="w-3.5 h-3.5 fill-[#C89A4B]" />
+            </div>
+            <span className="text-xs font-sans font-bold text-[#071A2B]">
+              {product.rating !== undefined ? product.rating.toFixed(1) : '5.0'}
+            </span>
+            <span className="text-[11px] font-sans text-[#1C242B]/50">
+              ({product.reviewCount || 120})
+            </span>
+            {product.platform && (
+              <span className="ml-auto text-[9px] font-sans px-1.5 py-0.5 rounded-xs bg-[#071A2B]/5 text-[#071A2B] font-medium">
+                {product.platform}
+              </span>
+            )}
+          </div>
 
           {/* Short description */}
           <p className="font-sans text-xs text-[#1C242B]/65 line-clamp-2 leading-relaxed mb-4 font-light">

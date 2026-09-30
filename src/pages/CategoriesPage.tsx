@@ -1,11 +1,11 @@
 import React from 'react';
-import { CATEGORIES } from '../data/categories';
-import { PRODUCTS } from '../data/products';
 import { useNavigation } from '../context/NavigationContext';
+import { useProducts } from '../context/ProductContext';
 import { ArrowRight } from 'lucide-react';
 
 export const CategoriesPage: React.FC = () => {
   const { navigateTo } = useNavigation();
+  const { categories, products } = useProducts();
 
   return (
     <div className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 bg-[#F5F0E8] min-h-screen">
@@ -30,9 +30,9 @@ export const CategoriesPage: React.FC = () => {
 
         {/* Detailed Category Sections */}
         <div className="space-y-16 sm:space-y-24">
-          {CATEGORIES.map((category, index) => {
+          {categories.map((category, index) => {
             const isEven = index % 2 === 0;
-            const categoryProducts = PRODUCTS.filter((p) => p.category === category.slug).slice(0, 3);
+            const categoryProducts = products.filter((p) => p.category === category.slug).slice(0, 3);
 
             return (
               <div

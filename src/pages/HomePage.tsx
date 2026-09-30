@@ -8,12 +8,12 @@ import { BrandStory } from '../components/BrandStory';
 import { Benefits } from '../components/Benefits';
 import { SecondQuoteSection } from '../components/SecondQuoteSection';
 import { Newsletter } from '../components/Newsletter';
-import { CATEGORIES } from '../data/categories';
-import { PRODUCTS } from '../data/products';
 import { useNavigation } from '../context/NavigationContext';
+import { useProducts } from '../context/ProductContext';
 
 export const HomePage: React.FC = () => {
   const { navigateTo } = useNavigation();
+  const { products, categories } = useProducts();
 
   return (
     <div className="flex flex-col">
@@ -42,7 +42,7 @@ export const HomePage: React.FC = () => {
 
           {/* Categories Presentation */}
           <div className="max-w-xl mx-auto">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <CategoryCard key={cat.id} category={cat} />
             ))}
           </div>
@@ -86,7 +86,7 @@ export const HomePage: React.FC = () => {
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {PRODUCTS.map((p) => (
+            {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
