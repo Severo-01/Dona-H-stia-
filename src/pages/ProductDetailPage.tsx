@@ -144,12 +144,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
           </div>
         </div>
 
-        {/* Curation & Safety Notice */}
+        {/* Security & Share Notice */}
         <div className="bg-white/90 border-l-2 border-[#C89A4B] p-3 sm:p-4 mb-8 rounded-xs flex items-center justify-between gap-4 text-xs font-sans text-[#071A2B]/80 shadow-xs">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#C89A4B]" />
             <span>
-              <strong>Curadoria Dona Héstia:</strong> Seleção criteriosa com redirecionamento direto para a oferta verificada.
+              <strong>Oferta Verificada:</strong> Redirecionamento direto para a loja parceira oficial.
             </span>
           </div>
           <button
@@ -268,7 +268,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
               <div className="py-4.5 px-4 bg-[#FDFBF7] border border-[#071A2B]/10 rounded-xs my-5">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] font-sans font-semibold uppercase tracking-[0.18em] text-[#8A6726]">
-                    Curadoria &amp; Oferta Oficial
+                    Oferta Oficial Verificada
                   </span>
                   <span className="text-[10px] font-sans text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-xs border border-emerald-200 font-medium">
                     Link Direto Verificado

@@ -2114,18 +2114,10 @@ export const DeveloperPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#071A2B]/10 flex items-center justify-between">
-                <div>
-                  <span className="block text-[10px] font-sans uppercase tracking-[0.14em] text-[#8A6726] font-semibold">
-                    Curadoria Oficial
-                  </span>
-                  <span className="block text-[10px] font-sans text-[#1C242B]/50 mt-0.5">
-                    Oferta {customPlatform || platform || 'Verificada'} &bull; Sem preço exposto
-                  </span>
-                </div>
-
-                <span className="px-3 py-1.5 bg-[#071A2B] text-[#F5F0E8] text-[10px] font-sans tracking-wider uppercase rounded-xs font-semibold">
-                  Ver oferta oficial
+              <div className="pt-3 border-t border-[#071A2B]/10 flex items-center justify-center">
+                <span className="w-full py-2.5 px-4 bg-[#071A2B] text-[#F5F0E8] text-xs font-sans tracking-[0.16em] uppercase rounded-xs font-semibold text-center flex items-center justify-center gap-2">
+                  <span>Ver oferta oficial</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
