@@ -157,10 +157,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             {/* Main Stage Image */}
             <div className="relative aspect-4/3 sm:aspect-16/12 bg-[#F5F0E8]/40 border border-[#071A2B]/10 rounded-xs overflow-hidden flex items-center justify-center p-6">
               <img
-                src={product.images[selectedImageIndex] || product.images[0]}
+                src={(product.images && product.images[selectedImageIndex]) || (product.images && product.images[0]) || '/images/kian_pressure_cooker_official_1790094832015.jpg'}
                 alt={product.name}
                 className="w-full h-full object-contain transition-all duration-300"
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('kian_pressure_cooker_official')) {
+                    target.src = '/images/kian_pressure_cooker_official_1790094832015.jpg';
+                  }
+                }}
               />
               {product.badge && (
                 <span className="absolute top-4 left-4 px-3 py-1 bg-[#071A2B] text-[#E0B866] text-[10px] font-sans font-medium uppercase tracking-[0.2em] rounded-xs border border-[#C89A4B]/30">
@@ -250,26 +256,25 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
               {/* Price block */}
               <div className="py-4 border-y border-[#071A2B]/10 my-4">
                 <span className="block text-[11px] font-sans font-medium uppercase tracking-wider text-[#8A6726] mb-1">
-                  Preço aproximado
+                  Preço Oficial da Oferta
                 </span>
-                {product.priceRangeLabel ? (
-                  <div className="flex items-baseline flex-wrap gap-3">
-                    <span className="font-sans text-2xl sm:text-3xl font-semibold text-[#071A2B] tracking-tight">
-                      {product.priceRangeLabel}
+                <div className="flex items-baseline flex-wrap gap-3">
+                  {formattedOriginalPrice && (
+                    <span className="text-sm font-sans text-[#1C242B]/40 line-through">
+                      De {formattedOriginalPrice}
                     </span>
-                    <span className="text-xs font-sans text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs border border-emerald-200">
-                      Varia conforme cupom e promoção do dia
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-sans text-2xl sm:text-3xl font-semibold text-[#071A2B] tracking-tight">
-                      {formattedPrice}
-                    </span>
-                    <span className="text-xs font-sans text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs">
-                      À vista com desconto
-                    </span>
-                  </div>
+                  )}
+                  <span className="font-sans text-2xl sm:text-3xl font-bold text-[#071A2B] tracking-tight">
+                    {formattedPrice}
+                  </span>
+                  <span className="text-xs font-sans text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs font-medium border border-emerald-200">
+                    À vista com desconto
+                  </span>
+                </div>
+                {product.priceRangeLabel && (
+                  <p className="text-xs font-sans text-[#8A6726] mt-1.5 font-medium">
+                    {product.priceRangeLabel}
+                  </p>
                 )}
                 <p className="text-xs font-sans text-[#1C242B]/60 mt-1.5">
                   Consulte condições de parcelamento e cupons ativos na página oficial da oferta.

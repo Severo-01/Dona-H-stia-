@@ -30,10 +30,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Product Image Container */}
       <div className="relative aspect-square bg-[#F5F0E8]/50 overflow-hidden flex items-center justify-center p-6">
         <img
-          src={product.images[0]}
+          src={product.images && product.images[0] ? product.images[0] : '/images/kian_pressure_cooker_official_1790094832015.jpg'}
           alt={product.name}
           className="w-full h-full object-contain transform transition-transform duration-500 ease-out group-hover:scale-105"
           referrerPolicy="no-referrer"
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.src.includes('kian_pressure_cooker_official')) {
+              target.src = '/images/kian_pressure_cooker_official_1790094832015.jpg';
+            }
+          }}
         />
 
         {/* Optional Subtle Badge */}
@@ -107,28 +113,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Price & Action */}
         <div className="pt-4 border-t border-[#071A2B]/5 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            {product.priceRangeLabel ? (
-              <>
-                <span className="block text-[10px] font-sans font-medium uppercase tracking-wider text-[#8A6726]">
-                  Preço aproximado
-                </span>
-                <span className="font-sans text-base sm:text-lg font-semibold text-[#071A2B] tracking-tight">
+            {formattedOriginalPrice && (
+              <span className="block text-[11px] font-sans text-[#1C242B]/40 line-through">
+                De {formattedOriginalPrice}
+              </span>
+            )}
+            <div className="flex items-baseline flex-wrap gap-2">
+              <span className="font-sans text-lg sm:text-xl font-bold text-[#071A2B] tracking-tight">
+                {formattedPrice}
+              </span>
+              {product.priceRangeLabel && (
+                <span className="text-[10px] font-sans text-[#8A6726] bg-[#C89A4B]/10 px-1.5 py-0.5 rounded-xs font-medium">
                   {product.priceRangeLabel}
                 </span>
-              </>
-            ) : (
-              <>
-                {formattedOriginalPrice && (
-                  <span className="block text-[11px] font-sans text-[#1C242B]/40 line-through">
-                    {formattedOriginalPrice}
-                  </span>
-                )}
-                <span className="font-sans text-lg sm:text-xl font-semibold text-[#071A2B] tracking-tight">
-                  {formattedPrice}
-                </span>
-              </>
-            )}
-            <span className="block text-[10px] font-sans text-[#1C242B]/50 font-normal">
+              )}
+            </div>
+            <span className="block text-[10px] font-sans text-[#1C242B]/50 font-normal mt-0.5">
               Valor promocional com cupons do dia
             </span>
           </div>
