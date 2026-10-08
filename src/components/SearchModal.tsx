@@ -121,7 +121,7 @@ export const SearchModal: React.FC = () => {
                     className="py-3 flex items-center gap-4 hover:bg-white/60 p-2 cursor-pointer transition-colors"
                   >
                     <img
-                      src={p.images[0]}
+                      src={p.images && p.images[0] ? p.images[0] : '/images/kian_pressure_cooker_official_1790094832015.jpg'}
                       alt={p.name}
                       className="w-14 h-14 object-cover rounded-xs border border-[#071A2B]/10 shrink-0 bg-white"
                       referrerPolicy="no-referrer"
@@ -138,8 +138,8 @@ export const SearchModal: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="text-xs font-sans font-semibold text-[#071A2B]">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.price)}
+                      <span className="text-[11px] font-sans font-semibold text-[#8A6726] bg-[#C89A4B]/10 px-2.5 py-1 rounded-xs">
+                        Ver oferta oficial
                       </span>
                     </div>
                   </div>

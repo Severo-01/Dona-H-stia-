@@ -45,6 +45,11 @@ import {
   Grid,
   Radio,
   Wifi,
+  DollarSign,
+  Percent,
+  CreditCard,
+  HelpCircle,
+  Calculator,
 } from 'lucide-react';
 
 import {
@@ -224,21 +229,23 @@ export const DeveloperPage: React.FC = () => {
   // Form State for Product
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const [brand, setBrand] = useState('Kian');
+  const [brand, setBrand] = useState('Dona Héstia');
   const [category, setCategory] = useState('cozinha');
   const [productType, setProductType] = useState('Eletrodomésticos');
-  const [price, setPrice] = useState<string>('299.00');
-  const [originalPrice, setOriginalPrice] = useState<string>('349.00');
+  const [price, setPrice] = useState<string>('');
+  const [originalPrice, setOriginalPrice] = useState<string>('');
+  const [hasOriginalPrice, setHasOriginalPrice] = useState<boolean>(false);
+  const [installmentText, setInstallmentText] = useState<string>('');
   const [priceRangeLabel, setPriceRangeLabel] = useState('');
-  const [badge, setBadge] = useState('Destaque Oficial');
+  const [badge, setBadge] = useState('');
   const [customBadge, setCustomBadge] = useState('');
   const [rating, setRating] = useState<number>(4.9);
-  const [reviewCount, setReviewCount] = useState<number>(348);
+  const [reviewCount, setReviewCount] = useState<number>(120);
   const [shortDescription, setShortDescription] = useState('');
   const [fullDescription, setFullDescription] = useState('');
   const [platform, setPlatform] = useState('Shopee');
   const [customPlatform, setCustomPlatform] = useState('');
-  const [buyUrl, setBuyUrl] = useState('https://s.shopee.com.br/112vcBEklr');
+  const [buyUrl, setBuyUrl] = useState('');
   const [highlight, setHighlight] = useState(false);
   const [voltages, setVoltages] = useState<string[]>([]);
 
@@ -350,7 +357,14 @@ export const DeveloperPage: React.FC = () => {
     setCategory(product.category);
     setProductType(product.productType || 'Eletrodomésticos');
     setPrice(product.price ? product.price.toString() : '');
-    setOriginalPrice(product.originalPrice ? product.originalPrice.toString() : '');
+    if (product.originalPrice && product.originalPrice > 0) {
+      setOriginalPrice(product.originalPrice.toString());
+      setHasOriginalPrice(true);
+    } else {
+      setOriginalPrice('');
+      setHasOriginalPrice(false);
+    }
+    setInstallmentText(product.installmentText || '');
     setPriceRangeLabel(product.priceRangeLabel || '');
     setBadge(product.badge || '');
     setCustomBadge('');
@@ -414,6 +428,8 @@ export const DeveloperPage: React.FC = () => {
     setProductType('Eletrodomésticos');
     setPrice('');
     setOriginalPrice('');
+    setHasOriginalPrice(false);
+    setInstallmentText('');
     setPriceRangeLabel('');
     setBadge('');
     setCustomBadge('');
@@ -571,7 +587,9 @@ export const DeveloperPage: React.FC = () => {
         setIsSavingProduct(false);
         return;
       }
-      const numericOriginalPrice = originalPrice ? (parseCurrencyInput(originalPrice) || undefined) : undefined;
+      const numericOriginalPrice = (hasOriginalPrice && originalPrice.trim())
+        ? (parseCurrencyInput(originalPrice) > 0 ? parseCurrencyInput(originalPrice) : undefined)
+        : undefined;
 
       const finalPlatform = customPlatform.trim() ? customPlatform.trim() : platform;
       const finalBadge = customBadge.trim() ? customBadge.trim() : badge;
@@ -594,6 +612,7 @@ export const DeveloperPage: React.FC = () => {
         productType: productType.trim() || 'Eletrodomésticos',
         price: numericPrice,
         originalPrice: numericOriginalPrice,
+        installmentText: installmentText.trim() || undefined,
         priceRangeLabel: priceRangeLabel.trim() || undefined,
         badge: finalBadge || undefined,
         rating: rating,
@@ -1511,50 +1530,295 @@ export const DeveloperPage: React.FC = () => {
           </div>
         </div>
 
-        {/* SECTION 7: PRICE & COMMERCIAL DETAILS */}
-        <div className="space-y-4 pt-4 border-t border-[#071A2B]/10">
-          <label className="block text-xs font-sans uppercase tracking-[0.16em] text-[#071A2B] font-semibold">
-            7. Preço e Condições Comerciais
-          </label>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* SECTION 7: PRICE & COMMERCIAL DETAILS REMODELED */}
+        <div className="space-y-6 pt-5 border-t border-[#071A2B]/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#071A2B]/10">
             <div>
-              <label className="block text-[11px] font-sans text-[#1C242B]/70 mb-1">
-                Preço Atual / Promocional (R$) *
-              </label>
-              <input
-                type="text"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Ex: 299.00 ou 299,00"
-                required
-                className="w-full bg-[#F5F0E8]/50 border border-[#071A2B]/20 text-[#071A2B] px-3.5 py-2.5 rounded-xs text-xs sm:text-sm font-semibold focus:outline-hidden focus:border-[#C89A4B]"
-              />
-              <span className="block text-[10px] text-[#1C242B]/60 mt-1">
-                Valor real cadastrado: <strong className="text-emerald-700 font-bold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(price))}</strong>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#C89A4B]" />
+                <label className="text-xs font-sans uppercase tracking-[0.16em] text-[#071A2B] font-bold">
+                  7. Preço & Condições Comerciais
+                </label>
+              </div>
+              <p className="text-xs font-sans text-[#1C242B]/60 mt-0.5">
+                Defina o valor real de venda, escolha se haverá preço original riscado ("De R$ X") e informe as condições de parcelamento ou Pix.
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 self-start sm:self-auto">
+              <span className={`px-2.5 py-1 text-[10px] font-sans rounded-xs font-semibold uppercase tracking-wider ${
+                hasOriginalPrice && parseCurrencyInput(originalPrice) > parseCurrencyInput(price)
+                  ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                  : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+              }`}>
+                {hasOriginalPrice && parseCurrencyInput(originalPrice) > parseCurrencyInput(price)
+                  ? 'Oferta com Desconto ("De / Por")'
+                  : 'Modo Preço Único'}
               </span>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-[11px] font-sans text-[#1C242B]/70 mb-1">
-                Preço Original "De" (R$) <span className="text-[#1C242B]/50 font-normal">(Opcional)</span>
-              </label>
-              <input
-                type="text"
-                value={originalPrice}
-                onChange={(e) => setOriginalPrice(e.target.value)}
-                placeholder="Ex: 349.00"
-                className="w-full bg-[#F5F0E8]/50 border border-[#071A2B]/20 text-[#071A2B] px-3.5 py-2.5 rounded-xs text-xs sm:text-sm focus:outline-hidden focus:border-[#C89A4B]"
-              />
-              <span className="block text-[10px] text-[#1C242B]/60 mt-1">
-                {originalPrice ? `Aparecerá riscado como "De ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(originalPrice))}"` : 'Deixe vazio se não houver desconto'}
-              </span>
+          {/* MAIN PRICING GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* CARD 1: PREÇO DE VENDA PRINCIPAL */}
+            <div className="bg-white border-2 border-[#071A2B]/15 rounded-xs p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-sans uppercase tracking-wider text-[#071A2B] font-bold flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+                    Preço de Venda / Preço Atual (R$) *
+                  </label>
+                  <span className="text-[10px] font-sans font-semibold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-xs">
+                    Obrigatório
+                  </span>
+                </div>
+                <p className="text-[11px] font-sans text-[#1C242B]/60 mb-3">
+                  Este é o valor real cobrado do cliente quando ele acessa o link oficial de afiliado.
+                </p>
+
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-sans font-bold text-[#071A2B]/60">
+                    R$
+                  </span>
+                  <input
+                    type="text"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="Ex: 249,90 ou 299.00"
+                    required
+                    className="w-full bg-[#F5F0E8]/40 border border-[#071A2B]/25 text-[#071A2B] pl-10 pr-3.5 py-3 rounded-xs text-base sm:text-lg font-bold font-sans focus:outline-hidden focus:border-[#C89A4B] focus:bg-white transition-all shadow-inner"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-[#071A2B]/10 flex items-center justify-between">
+                <span className="text-[11px] font-sans text-[#1C242B]/70">
+                  Valor formatado na loja:
+                </span>
+                <span className="text-sm font-sans font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs border border-emerald-200">
+                  {parseCurrencyInput(price) > 0
+                    ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(price))
+                    : 'R$ 0,00'}
+                </span>
+              </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-[11px] font-sans text-[#1C242B]/70">
-                  Faixa de Preço (Opcional)
+            {/* CARD 2: CONFIGURAÇÃO DE PREÇO ORIGINAL "DE" */}
+            <div className={`border rounded-xs p-4 sm:p-5 transition-all flex flex-col justify-between ${
+              hasOriginalPrice
+                ? 'bg-[#FDFBF7] border-[#C89A4B]/40 shadow-xs'
+                : 'bg-[#F5F0E8]/40 border-[#071A2B]/15'
+            }`}>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-sans uppercase tracking-wider text-[#071A2B] font-bold flex items-center gap-1.5">
+                    <Percent className="w-3.5 h-3.5 text-[#C89A4B]" />
+                    Estratégia de Preço: Preço "De"
+                  </label>
+                  <span className="text-[10px] font-sans font-medium text-[#1C242B]/50 bg-white/80 px-1.5 py-0.5 rounded-xs border border-[#071A2B]/10">
+                    100% Opcional
+                  </span>
+                </div>
+                <p className="text-[11px] font-sans text-[#1C242B]/60 mb-3">
+                  Escolha se este produto terá um valor anterior riscado ou apenas o preço único direto.
+                </p>
+
+                {/* SEGMENTED TOGGLE BUTTONS */}
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHasOriginalPrice(false);
+                      setOriginalPrice('');
+                    }}
+                    className={`py-2 px-3 text-xs font-sans rounded-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      !hasOriginalPrice
+                        ? 'bg-[#071A2B] text-[#E0B866] font-semibold shadow-xs'
+                        : 'bg-white text-[#1C242B]/70 border border-[#071A2B]/20 hover:bg-[#F5F0E8]'
+                    }`}
+                  >
+                    {!hasOriginalPrice && <Check className="w-3.5 h-3.5" />}
+                    <span>Preço Único (Sem "De")</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHasOriginalPrice(true);
+                      if (!originalPrice && parseCurrencyInput(price) > 0) {
+                        // Preenche sugestão de +20% se vazio para facilitar
+                        const suggested = Math.round(parseCurrencyInput(price) * 1.25);
+                        setOriginalPrice(suggested.toString());
+                      }
+                    }}
+                    className={`py-2 px-3 text-xs font-sans rounded-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      hasOriginalPrice
+                        ? 'bg-[#071A2B] text-[#E0B866] font-semibold shadow-xs'
+                        : 'bg-white text-[#1C242B]/70 border border-[#071A2B]/20 hover:bg-[#F5F0E8]'
+                    }`}
+                  >
+                    {hasOriginalPrice && <Check className="w-3.5 h-3.5" />}
+                    <span>Com Preço "De R$ X"</span>
+                  </button>
+                </div>
+
+                {/* CONDITIONAL ORIGINAL PRICE INPUT */}
+                {hasOriginalPrice ? (
+                  <div className="space-y-2.5 pt-2 border-t border-[#071A2B]/10 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-sans font-medium text-[#071A2B]">
+                        Preço Original "De" (R$) — Digite qualquer valor:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHasOriginalPrice(false);
+                          setOriginalPrice('');
+                        }}
+                        className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Remover preço "De"
+                      </button>
+                    </div>
+
+                    <div className="relative">
+                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-sans font-bold text-[#071A2B]/60">
+                        R$
+                      </span>
+                      <input
+                        type="text"
+                        value={originalPrice}
+                        onChange={(e) => setOriginalPrice(e.target.value)}
+                        placeholder="Ex: 349.00 ou qualquer valor X"
+                        className="w-full bg-white border border-[#C89A4B]/50 text-[#071A2B] pl-10 pr-3.5 py-2.5 rounded-xs text-sm sm:text-base font-semibold focus:outline-hidden focus:border-[#C89A4B]"
+                      />
+                    </div>
+
+                    {/* QUICK PERCENTAGE SHORTCUT BUTTONS */}
+                    {parseCurrencyInput(price) > 0 && (
+                      <div className="flex items-center flex-wrap gap-1.5 pt-1">
+                        <span className="text-[10px] font-sans text-[#1C242B]/60 mr-1">
+                          Atalhos rápidos:
+                        </span>
+                        {[15, 20, 30, 40, 50].map((pct) => {
+                          const calculatedVal = Math.round(parseCurrencyInput(price) * (1 + pct / 100));
+                          return (
+                            <button
+                              key={pct}
+                              type="button"
+                              onClick={() => setOriginalPrice(calculatedVal.toString())}
+                              className="px-2 py-0.5 text-[10px] font-sans bg-white hover:bg-[#071A2B] hover:text-[#E0B866] text-[#071A2B] border border-[#071A2B]/20 rounded-xs transition-colors cursor-pointer"
+                              title={`Calcular +${pct}% sobre o preço atual (R$ ${calculatedVal})`}
+                            >
+                              +{pct}% (R$ {calculatedVal})
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-3 bg-white/70 border border-emerald-200 rounded-xs text-[11px] font-sans text-emerald-800 leading-relaxed flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong>Modo Preço Único ativo:</strong> Este produto não exibirá nenhum valor riscado na loja. O cliente verá apenas o preço oficial de venda.
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* DISCOUNT FEEDBACK BADGE */}
+              {hasOriginalPrice && originalPrice && (
+                <div className="mt-3 pt-3 border-t border-[#071A2B]/10">
+                  {parseCurrencyInput(originalPrice) > parseCurrencyInput(price) && parseCurrencyInput(price) > 0 ? (
+                    <div className="flex items-center justify-between text-[11px] font-sans bg-emerald-50 border border-emerald-200 text-emerald-800 p-2 rounded-xs">
+                      <span>
+                        Economia real: <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(originalPrice) - parseCurrencyInput(price))}</strong>
+                      </span>
+                      <span className="font-bold bg-rose-600 text-white px-1.5 py-0.5 rounded-xs text-[10px]">
+                        {Math.round(((parseCurrencyInput(originalPrice) - parseCurrencyInput(price)) / parseCurrencyInput(originalPrice)) * 100)}% OFF
+                      </span>
+                    </div>
+                  ) : parseCurrencyInput(originalPrice) > 0 && parseCurrencyInput(price) > 0 ? (
+                    <div className="text-[10px] font-sans text-amber-800 bg-amber-50 border border-amber-200 p-2 rounded-xs flex items-center gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>Para exibir desconto promocional, o preço "De" deve ser maior que o preço atual.</span>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* COMMERCIAL CONDITIONS & INSTALLMENTS ROW */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+            {/* CONDIÇÃO DE PARCELAMENTO */}
+            <div className="bg-[#F5F0E8]/40 border border-[#071A2B]/15 rounded-xs p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-sans uppercase tracking-wider text-[#071A2B] font-bold flex items-center gap-1.5">
+                  <CreditCard className="w-3.5 h-3.5 text-[#C89A4B]" />
+                  Condição de Pagamento & Parcelamento (Opcional)
+                </label>
+                {installmentText && (
+                  <button
+                    type="button"
+                    onClick={() => setInstallmentText('')}
+                    className="text-[10px] text-rose-600 hover:underline cursor-pointer"
+                  >
+                    Limpar
+                  </button>
+                )}
+              </div>
+              <p className="text-[11px] font-sans text-[#1C242B]/60 mb-2.5">
+                Texto exibido abaixo do preço no card e na página de detalhes.
+              </p>
+
+              <input
+                type="text"
+                value={installmentText}
+                onChange={(e) => setInstallmentText(e.target.value)}
+                placeholder="Ex: Em até 10x sem juros de R$ 29,90 ou À vista no Pix"
+                className="w-full bg-white border border-[#071A2B]/20 text-[#071A2B] px-3.5 py-2.5 rounded-xs text-xs sm:text-sm focus:outline-hidden focus:border-[#C89A4B]"
+              />
+
+              {/* QUICK SUGGESTIONS */}
+              <div className="flex items-center flex-wrap gap-1.5 mt-2.5">
+                <span className="text-[10px] font-sans text-[#1C242B]/50 mr-1">Sugestões rápidas:</span>
+                {parseCurrencyInput(price) > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const par = (parseCurrencyInput(price) / 10).toFixed(2).replace('.', ',');
+                      setInstallmentText(`Em até 10x de R$ ${par} sem juros`);
+                    }}
+                    className="px-2 py-1 text-[10px] font-sans bg-white hover:bg-[#071A2B] hover:text-[#E0B866] text-[#071A2B] border border-[#071A2B]/20 rounded-xs transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    <Calculator className="w-3 h-3" />
+                    <span>Calcular 10x sem juros</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setInstallmentText('Em até 12x no cartão de crédito')}
+                  className="px-2 py-1 text-[10px] font-sans bg-white hover:bg-[#071A2B] hover:text-[#E0B866] text-[#071A2B] border border-[#071A2B]/20 rounded-xs transition-colors cursor-pointer"
+                >
+                  Em até 12x
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInstallmentText('À vista no Pix com 5% de desconto')}
+                  className="px-2 py-1 text-[10px] font-sans bg-white hover:bg-[#071A2B] hover:text-[#E0B866] text-[#071A2B] border border-[#071A2B]/20 rounded-xs transition-colors cursor-pointer"
+                >
+                  À vista no Pix
+                </button>
+              </div>
+            </div>
+
+            {/* SELO / FAIXA DE PREÇO OPCIONAL */}
+            <div className="bg-[#F5F0E8]/40 border border-[#071A2B]/15 rounded-xs p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-sans uppercase tracking-wider text-[#071A2B] font-bold flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-[#C89A4B]" />
+                  Faixa de Preço ou Selo Adicional (Opcional)
                 </label>
                 {priceRangeLabel && (
                   <button
@@ -1562,25 +1826,89 @@ export const DeveloperPage: React.FC = () => {
                     onClick={() => setPriceRangeLabel('')}
                     className="text-[10px] text-rose-600 hover:underline cursor-pointer"
                   >
-                    Remover faixa
+                    Remover selo
                   </button>
                 )}
               </div>
+              <p className="text-[11px] font-sans text-[#1C242B]/60 mb-2.5">
+                Se preenchido, aparecerá como selo ao lado do preço (ex: "Oferta Relâmpago", "Menor Preço em 30 Dias").
+              </p>
+
               <input
                 type="text"
                 value={priceRangeLabel}
                 onChange={(e) => setPriceRangeLabel(e.target.value)}
-                placeholder="Deixe vazio para usar apenas o preço principal"
-                className="w-full bg-[#F5F0E8]/50 border border-[#071A2B]/20 text-[#071A2B] px-3.5 py-2.5 rounded-xs text-xs sm:text-sm focus:outline-hidden focus:border-[#C89A4B]"
+                placeholder="Deixe vazio para usar apenas o preço exato da loja"
+                className="w-full bg-white border border-[#071A2B]/20 text-[#071A2B] px-3.5 py-2.5 rounded-xs text-xs sm:text-sm focus:outline-hidden focus:border-[#C89A4B]"
               />
-              <span className="block text-[10px] text-[#1C242B]/60 mt-1">
-                {priceRangeLabel ? '⚠️ Se preenchido, este texto aparecerá como selo ao lado do preço. Recomendado deixar vazio para exibir apenas o valor exato.' : '✅ Vazio: o site exibirá somente o preço exato.'}
-              </span>
+
+              <div className="flex items-center flex-wrap gap-1.5 mt-2.5">
+                <span className="text-[10px] font-sans text-[#1C242B]/50 mr-1">Selos comuns:</span>
+                {['Menor Preço em 30 dias', 'Oferta Relâmpago', 'Frete Grátis'].map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setPriceRangeLabel(tag)}
+                    className="px-2 py-1 text-[10px] font-sans bg-white hover:bg-[#071A2B] hover:text-[#E0B866] text-[#071A2B] border border-[#071A2B]/20 rounded-xs transition-colors cursor-pointer"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Voltagem & Highlight */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {/* REAL-TIME COMMERCIAL SIMULATOR DISPLAY */}
+          <div className="bg-white border-2 border-dashed border-[#C89A4B]/40 rounded-xs p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-sans uppercase tracking-wider text-[#071A2B] font-bold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#C89A4B]" />
+                Simulador do Bloco de Preço no Site:
+              </span>
+              <span className="text-[10px] font-sans text-[#1C242B]/50">
+                Visualização exata de como o visitante verá
+              </span>
+            </div>
+
+            <div className="bg-[#FDFBF7] border border-[#071A2B]/10 rounded-xs p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                {hasOriginalPrice && parseCurrencyInput(originalPrice) > 0 && (
+                  <span className="block text-xs font-sans text-[#1C242B]/40 line-through">
+                    De {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(originalPrice))}
+                  </span>
+                )}
+                <div className="flex items-baseline flex-wrap gap-2.5 mt-0.5">
+                  <span className="font-sans text-2xl font-bold text-[#071A2B] tracking-tight">
+                    {parseCurrencyInput(price) > 0
+                      ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseCurrencyInput(price))
+                      : 'R$ 0,00'}
+                  </span>
+                  {hasOriginalPrice && parseCurrencyInput(originalPrice) > parseCurrencyInput(price) && parseCurrencyInput(price) > 0 && (
+                    <span className="text-xs font-sans font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-xs border border-rose-200">
+                      {Math.round(((parseCurrencyInput(originalPrice) - parseCurrencyInput(price)) / parseCurrencyInput(originalPrice)) * 100)}% OFF
+                    </span>
+                  )}
+                  {priceRangeLabel && (
+                    <span className="text-xs font-sans text-[#8A6726] bg-[#C89A4B]/10 px-2 py-0.5 rounded-xs font-medium">
+                      {priceRangeLabel}
+                    </span>
+                  )}
+                </div>
+                <span className="block text-xs font-sans text-[#1C242B]/70 mt-1 font-medium">
+                  {installmentText || (hasOriginalPrice ? 'À vista ou parcelado no cartão' : 'Valor promocional com cupons do dia')}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-3.5 py-1.5 bg-[#071A2B] text-[#E0B866] text-xs font-sans uppercase tracking-wider font-semibold rounded-xs shadow-xs">
+                  Comprar na {customPlatform || platform}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* VOLTAGEM & HIGHLIGHT ROW */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#071A2B]/10">
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-[11px] font-sans text-[#1C242B]/70 font-medium">
@@ -1635,21 +1963,26 @@ export const DeveloperPage: React.FC = () => {
                 </button>
               </div>
               <p className="text-[10px] font-sans text-[#1C242B]/50 mt-1.5">
-                O preenchimento da voltagem é totalmente opcional. Deixe em branco para produtos não-elétricos, utensílios ou decorativos.
+                Deixe em branco para produtos não-elétricos, utensílios de mesa ou decoração.
               </p>
             </div>
 
             <div className="flex items-center">
-              <label className="flex items-center gap-2 cursor-pointer mt-4">
+              <label className="flex items-center gap-2.5 cursor-pointer mt-3 p-3 bg-white border border-[#071A2B]/15 rounded-xs w-full hover:border-[#C89A4B] transition-colors">
                 <input
                   type="checkbox"
                   checked={highlight}
                   onChange={(e) => setHighlight(e.target.checked)}
                   className="w-4 h-4 rounded-xs border-[#C89A4B] text-[#071A2B] focus:ring-[#C89A4B]"
                 />
-                <span className="text-xs font-sans text-[#071A2B] font-medium">
-                  Destacar na Seção Especial da Página Inicial
-                </span>
+                <div>
+                  <span className="block text-xs font-sans text-[#071A2B] font-bold">
+                    Destacar na Seção Especial da Página Inicial
+                  </span>
+                  <span className="block text-[10px] font-sans text-[#1C242B]/60">
+                    O produto aparecerá no banner curado com grande destaque visual.
+                  </span>
+                </div>
               </label>
             </div>
           </div>
@@ -1781,36 +2114,18 @@ export const DeveloperPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#071A2B]/10 flex items-end justify-between">
+              <div className="pt-3 border-t border-[#071A2B]/10 flex items-center justify-between">
                 <div>
-                  {priceRangeLabel ? (
-                    <>
-                      <span className="block text-[9px] font-sans uppercase text-[#8A6726]">
-                        Preço aproximado
-                      </span>
-                      <span className="font-sans text-base font-semibold text-[#071A2B]">
-                        {priceRangeLabel}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      {originalPrice && (
-                        <span className="block text-[10px] font-sans text-[#1C242B]/40 line-through">
-                          R$ {originalPrice}
-                        </span>
-                      )}
-                      <span className="font-sans text-lg font-semibold text-[#071A2B]">
-                        R$ {price || '0,00'}
-                      </span>
-                    </>
-                  )}
-                  <span className="block text-[9px] font-sans text-[#1C242B]/50">
-                    Oferta {customPlatform || platform}
+                  <span className="block text-[10px] font-sans uppercase tracking-[0.14em] text-[#8A6726] font-semibold">
+                    Curadoria Oficial
+                  </span>
+                  <span className="block text-[10px] font-sans text-[#1C242B]/50 mt-0.5">
+                    Oferta {customPlatform || platform || 'Verificada'} &bull; Sem preço exposto
                   </span>
                 </div>
 
-                <span className="px-3 py-1.5 bg-[#071A2B] text-[#F5F0E8] text-[10px] font-sans tracking-wider uppercase rounded-xs font-medium">
-                  Ver
+                <span className="px-3 py-1.5 bg-[#071A2B] text-[#F5F0E8] text-[10px] font-sans tracking-wider uppercase rounded-xs font-semibold">
+                  Ver oferta oficial
                 </span>
               </div>
             </div>
@@ -2476,7 +2791,7 @@ export const DeveloperPage: React.FC = () => {
                     </option>
                     {pickerAvailableProducts.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} - R$ {p.price.toFixed(2).replace('.', ',')}
+                        {p.name} {typeof p.price === 'number' && !isNaN(p.price) ? `- R$ ${p.price.toFixed(2).replace('.', ',')}` : ''}
                       </option>
                     ))}
                   </select>
@@ -2515,7 +2830,7 @@ export const DeveloperPage: React.FC = () => {
                           {activeProd.name}
                         </h4>
                         <span className="text-xs font-sans text-[#1C242B]/75 block font-medium">
-                          Preço: <strong className="text-emerald-700 font-bold">R$ {activeProd.price.toFixed(2).replace('.', ',')}</strong>
+                          Preço: <strong className="text-emerald-700 font-bold">R$ {typeof activeProd.price === 'number' && !isNaN(activeProd.price) ? activeProd.price.toFixed(2).replace('.', ',') : '0,00'}</strong>
                           {activeProd.priceRangeLabel && <span className="ml-1 text-[10px] text-[#8A6726]">({activeProd.priceRangeLabel})</span>} &bull; Loja: {activeProd.platform || 'Shopee'}
                         </span>
                       </div>
@@ -2596,7 +2911,7 @@ export const DeveloperPage: React.FC = () => {
                                 {p.name}
                               </h5>
                               <span className="text-[11px] font-sans text-[#071A2B] font-bold block mt-0.5">
-                                R$ {p.price.toFixed(2).replace('.', ',')}
+                                R$ {typeof p.price === 'number' && !isNaN(p.price) ? p.price.toFixed(2).replace('.', ',') : '0,00'}
                                 {p.priceRangeLabel && (
                                   <span className="ml-1 text-[10px] text-[#8A6726] font-normal">
                                     ({p.priceRangeLabel})
@@ -2846,7 +3161,14 @@ export const DeveloperPage: React.FC = () => {
                               </td>
 
                               <td className="py-3.5 px-3 font-semibold text-[#071A2B]">
-                                <span className="text-emerald-700 font-bold">R$ {product.price.toFixed(2).replace('.', ',')}</span>
+                                <span className="text-emerald-700 font-bold">R$ {typeof product.price === 'number' && !isNaN(product.price) ? product.price.toFixed(2).replace('.', ',') : '0,00'}</span>
+                                {product.originalPrice && typeof product.price === 'number' && product.originalPrice > product.price ? (
+                                  <div className="text-[10px] text-gray-400 line-through">
+                                    De R$ {product.originalPrice.toFixed(2).replace('.', ',')}
+                                  </div>
+                                ) : (
+                                  <div className="text-[10px] text-emerald-600 font-normal">Preço Único</div>
+                                )}
                                 {product.priceRangeLabel && (
                                   <div className="text-[10px] text-[#8A6726] font-normal">{product.priceRangeLabel}</div>
                                 )}
@@ -2956,14 +3278,25 @@ export const DeveloperPage: React.FC = () => {
                               {product.name}
                             </h4>
                             <div className="mt-2 flex items-center justify-between">
-                              <span className="text-xs font-bold text-emerald-700">
-                                R$ {product.price.toFixed(2).replace('.', ',')}
+                              <div>
+                                <span className="text-xs font-bold text-emerald-700">
+                                  R$ {product.price.toFixed(2).replace('.', ',')}
+                                </span>
+                                {product.originalPrice && product.originalPrice > product.price ? (
+                                  <span className="text-[10px] text-gray-400 line-through block">
+                                    De R$ {product.originalPrice.toFixed(2).replace('.', ',')}
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] text-emerald-600 font-medium block">
+                                    Preço Único
+                                  </span>
+                                )}
                                 {product.priceRangeLabel && (
-                                  <span className="ml-1 text-[10px] text-[#8A6726] font-normal block">
+                                  <span className="text-[10px] text-[#8A6726] font-normal block">
                                     {product.priceRangeLabel}
                                   </span>
                                 )}
-                              </span>
+                              </div>
                               <span className="text-[10px] px-1.5 py-0.5 rounded-xs bg-[#071A2B]/5 font-medium text-[#071A2B]">
                                 {product.platform || 'Shopee'}
                               </span>

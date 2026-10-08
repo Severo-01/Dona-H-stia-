@@ -27,11 +27,11 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPath(window.location.pathname || '/');
+      const path = window.location.pathname ? (window.location.pathname === '/' ? '/' : window.location.pathname.replace(/\/+$/, '')) : '/';
+      setCurrentPath(path);
       const params = new URLSearchParams(window.location.search);
-      setSelectedCategoryFilter(params.get('categoria'));
-      const q = params.get('q');
-      if (q) setSearchQuery(q);
+      setSelectedCategoryFilter(params.get('categoria') || null);
+      setSearchQuery(params.get('q') || '');
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -39,28 +39,41 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   const navigateTo = (path: string, options?: { category?: string; query?: string }) => {
-    let url = path;
+    const cleanPath = path ? (path === '/' ? '/' : path.replace(/\/+$/, '')) : '/';
+    let url = cleanPath;
     const params = new URLSearchParams();
-    if (options?.category) {
-      params.set('categoria', options.category);
-      setSelectedCategoryFilter(options.category);
-    } else if (options && 'category' in options && options.category === undefined) {
+
+    if (options && 'category' in options) {
+      if (options.category) {
+        params.set('categoria', options.category);
+        setSelectedCategoryFilter(options.category);
+      } else {
+        setSelectedCategoryFilter(null);
+      }
+    } else {
       setSelectedCategoryFilter(null);
     }
-    if (options?.query) {
-      params.set('q', options.query);
-      setSearchQuery(options.query);
+
+    if (options && 'query' in options) {
+      if (options.query) {
+        params.set('q', options.query);
+        setSearchQuery(options.query);
+      } else {
+        setSearchQuery('');
+      }
+    } else {
+      setSearchQuery('');
     }
 
     const qs = params.toString();
     if (qs) {
-      url = `${path}?${qs}`;
+      url = `${cleanPath}?${qs}`;
     }
 
     if (window.location.pathname + window.location.search !== url) {
       window.history.pushState({}, '', url);
     }
-    setCurrentPath(path);
+    setCurrentPath(cleanPath);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

@@ -25,17 +25,27 @@ export const Header: React.FC = () => {
     { label: 'DESENVOLVEDOR', path: '/desenvolvedor' },
   ];
 
+  const isLinkActive = (linkPath: string) => {
+    const clean = (currentPath || '/').split('?')[0].replace(/\/+$/, '') || '/';
+    if (linkPath === '/') return clean === '/';
+    if (linkPath === '/produtos') return clean === '/produtos' || clean.startsWith('/produto/');
+    if (linkPath === '/desenvolvedor') return clean.startsWith('/desenvolvedor') || clean.startsWith('/developer');
+    return clean === linkPath;
+  };
+
   const handleNavClick = (path: string) => {
     navigateTo(path);
     setMobileMenuOpen(false);
   };
 
+  const isHomePage = currentPath === '/' || currentPath === '';
+
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled
-            ? 'py-3.5 bg-[#071A2B]/95 backdrop-blur-md shadow-sm border-b border-[#C89A4B]/15 text-[#F5F0E8]'
+          isScrolled || !isHomePage
+            ? 'py-3.5 bg-[#071A2B]/95 backdrop-blur-md shadow-md border-b border-[#C89A4B]/20 text-[#F5F0E8]'
             : 'py-5 bg-gradient-to-b from-[#071A2B]/90 via-[#071A2B]/60 to-transparent text-[#F5F0E8]'
         }`}
       >
@@ -54,12 +64,12 @@ export const Header: React.FC = () => {
               className="hidden md:flex items-center space-x-8 lg:space-x-10"
             >
               {navLinks.map((link) => {
-                const isActive = currentPath === link.path;
+                const isActive = isLinkActive(link.path);
                 return (
                   <button
                     key={link.path}
                     onClick={() => handleNavClick(link.path)}
-                    className={`text-xs font-sans tracking-[0.2em] transition-colors relative py-1 focus:outline-hidden ${
+                    className={`text-xs font-sans tracking-[0.2em] transition-colors relative py-1 focus:outline-hidden cursor-pointer ${
                       isActive
                         ? 'text-[#E0B866] font-semibold'
                         : 'text-[#F5F0E8]/80 hover:text-[#E0B866]'
@@ -109,12 +119,12 @@ export const Header: React.FC = () => {
         <div className="fixed inset-0 z-30 md:hidden bg-[#071A2B]/98 backdrop-blur-lg pt-24 px-6 pb-8 flex flex-col justify-between">
           <nav className="flex flex-col space-y-6 pt-4">
             {navLinks.map((link) => {
-              const isActive = currentPath === link.path;
+              const isActive = isLinkActive(link.path);
               return (
                 <button
                   key={link.path}
                   onClick={() => handleNavClick(link.path)}
-                  className={`text-left text-lg tracking-[0.2em] font-serif transition-colors py-2 border-b border-white/5 ${
+                  className={`text-left text-lg tracking-[0.2em] font-serif transition-colors py-2 border-b border-white/5 cursor-pointer ${
                     isActive ? 'text-[#E0B866] font-medium' : 'text-[#F5F0E8]/80'
                   }`}
                 >

@@ -10,6 +10,7 @@ export interface Product {
   priceMax?: number;
   priceRangeLabel?: string;
   originalPrice?: number;
+  installmentText?: string;
   badge?: string;
   rating?: number;
   reviewCount?: number;
@@ -47,7 +48,7 @@ export interface CategoryInfo {
 
 export type SortOption =
   | 'relevance'
-  | 'price-asc'
-  | 'price-desc'
-  | 'newest';
+  | 'rating'
+  | 'newest'
+  | 'name-asc';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { useNavigation } from '../context/NavigationContext';
-import { ArrowRight, Star, Edit3 } from 'lucide-react';
+import { ArrowRight, Star, Edit3, ExternalLink } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -9,18 +9,6 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { navigateTo } = useNavigation();
-
-  const formattedPrice = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(product.price);
-
-  const formattedOriginalPrice = product.originalPrice
-    ? new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(product.originalPrice)
-    : null;
 
   return (
     <div
@@ -110,42 +98,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
         </div>
 
-        {/* Price & Action */}
-        <div className="pt-4 border-t border-[#071A2B]/5 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            {formattedOriginalPrice && (
-              <span className="block text-[11px] font-sans text-[#1C242B]/40 line-through">
-                De {formattedOriginalPrice}
-              </span>
-            )}
-            <div className="flex items-baseline flex-wrap gap-2">
-              <span className="font-sans text-lg sm:text-xl font-bold text-[#071A2B] tracking-tight">
-                {formattedPrice}
-              </span>
-              {product.priceRangeLabel && (
-                <span className="text-[10px] font-sans text-[#8A6726] bg-[#C89A4B]/10 px-1.5 py-0.5 rounded-xs font-medium">
-                  {product.priceRangeLabel}
-                </span>
-              )}
-            </div>
-            <span className="block text-[10px] font-sans text-[#1C242B]/50 font-normal mt-0.5">
-              Valor promocional com cupons do dia
+        {/* Discovery Action & Curated Trust Indicator */}
+        <div className="pt-4 border-t border-[#071A2B]/5 flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-sans uppercase tracking-[0.16em] text-[#8A6726] font-semibold">
+              Curadoria Oficial
+            </span>
+            <span className="text-[11px] font-sans text-[#1C242B]/55 font-light">
+              Oferta verificada
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigateTo(`/produto/${product.slug}`);
-              }}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#071A2B] group-hover:bg-[#C89A4B] text-[#F5F0E8] group-hover:text-[#071A2B] text-xs font-sans tracking-[0.16em] uppercase rounded-xs transition-colors duration-200 font-medium shadow-xs"
-            >
-              <span>Ver Produto</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateTo(`/produto/${product.slug}`);
+            }}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#071A2B] group-hover:bg-[#C89A4B] text-[#F5F0E8] group-hover:text-[#071A2B] text-xs font-sans tracking-[0.14em] uppercase rounded-xs transition-colors duration-200 font-semibold shadow-xs shrink-0"
+          >
+            <span>Ver oferta oficial</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </div>

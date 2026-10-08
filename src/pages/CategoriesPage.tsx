@@ -84,13 +84,13 @@ export const CategoriesPage: React.FC = () => {
                             <div
                               key={p.id}
                               onClick={() => navigateTo(`/produto/${p.slug}`)}
-                              className="flex items-center justify-between p-2 rounded-xs hover:bg-[#F5F0E8] cursor-pointer transition-colors"
+                              className="flex items-center justify-between p-2 rounded-xs hover:bg-[#F5F0E8] cursor-pointer transition-colors group"
                             >
-                              <span className="font-serif text-sm text-[#071A2B] hover:text-[#C89A4B]">
+                              <span className="font-serif text-sm text-[#071A2B] group-hover:text-[#C89A4B] transition-colors line-clamp-1 mr-3">
                                 {p.name}
                               </span>
-                              <span className="font-sans text-xs font-semibold text-[#071A2B]">
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.price)}
+                              <span className="font-sans text-[11px] font-semibold text-[#8A6726] shrink-0 group-hover:text-[#071A2B] transition-colors">
+                                Ver oferta oficial &rarr;
                               </span>
                             </div>
                           ))}

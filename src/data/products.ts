@@ -1,6 +1,8 @@
 import { Product } from '../types';
 import cookerMainImg from '../assets/images/kian_pressure_cooker_official_1790094832015.jpg';
-import cookerLifestyleImg from '../assets/images/kian_pressure_cooker_open_1790094855163.jpg';
+import cookerOpenImg from '../assets/images/kian_pressure_cooker_open_1790094855163.jpg';
+import cookerLifestyleImg from '../assets/images/kian_cooker_lifestyle_1790094517860.jpg';
+import cookerFrontImg from '../assets/images/kian_pressure_cooker_front_1790094504521.jpg';
 import grillClosedImg from '../assets/images/kian_grill_fechada_1789444283147.jpg';
 import omeleteiraOpenImg from '../assets/images/omeleteira_open_1789476847078.jpg';
 import omeleteiraClosedImg from '../assets/images/omeleteira_closed_1789476864647.jpg';
@@ -58,7 +60,9 @@ export const PRODUCTS: Product[] = [
     },
     images: [
       cookerMainImg,
+      cookerOpenImg,
       cookerLifestyleImg,
+      cookerFrontImg,
     ],
     highlight: true,
     buyUrl: SHOPEE_AFFILIATE_URL,

@@ -9,6 +9,7 @@ import {
   CheckCircle,
   Star,
   Edit3,
+  ShieldCheck,
 } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 
@@ -21,10 +22,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
   const { products, getProductBySlug } = useProducts();
 
   const product = useMemo(() => {
-    return getProductBySlug(slug) || products[0];
+    return getProductBySlug(slug) || products.find((p) => p.id === slug) || products[0];
   }, [slug, getProductBySlug, products]);
 
   const availableVoltages = useMemo(() => {
+    if (!product) return [];
     if (product.availableVoltages && product.availableVoltages.length > 0) {
       return product.availableVoltages;
     }
@@ -50,24 +52,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
 
   // Related products from same category
   const relatedProducts = useMemo(() => {
+    if (!product) return [];
     return products.filter(
       (p) => p.category === product.category && p.id !== product.id
     ).slice(0, 4);
   }, [products, product]);
 
-  const formattedPrice = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(product.price);
-
-  const formattedOriginalPrice = product.originalPrice
-    ? new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(product.originalPrice)
-    : null;
-
   const handleShare = () => {
+    if (!product) return;
     if (navigator.share) {
       navigator.share({
         title: product.name,
@@ -80,6 +72,25 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
+
+  if (!product) {
+    return (
+      <div className="pt-36 pb-24 px-4 text-center bg-[#F5F0E8] min-h-screen">
+        <div className="max-w-md mx-auto bg-white p-8 border border-[#071A2B]/10 rounded-xs shadow-sm">
+          <h2 className="font-serif text-2xl text-[#071A2B] mb-3">Produto não encontrado</h2>
+          <p className="font-sans text-xs text-[#1C242B]/70 mb-6">
+            O item que você procura pode ter sido atualizado ou não está mais disponível.
+          </p>
+          <button
+            onClick={() => navigateTo('/produtos')}
+            className="px-6 py-3 bg-[#071A2B] hover:bg-[#C89A4B] text-[#F5F0E8] hover:text-[#071A2B] text-xs font-sans uppercase tracking-wider rounded-xs font-semibold transition-colors"
+          >
+            Ver Catálogo de Produtos
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 bg-[#F5F0E8] min-h-screen">
@@ -253,32 +264,23 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
                 </span>
               </div>
 
-              {/* Price block */}
-              <div className="py-4 border-y border-[#071A2B]/10 my-4">
-                <span className="block text-[11px] font-sans font-medium uppercase tracking-wider text-[#8A6726] mb-1">
-                  Preço Oficial da Oferta
-                </span>
-                <div className="flex items-baseline flex-wrap gap-3">
-                  {formattedOriginalPrice && (
-                    <span className="text-sm font-sans text-[#1C242B]/40 line-through">
-                      De {formattedOriginalPrice}
-                    </span>
-                  )}
-                  <span className="font-sans text-2xl sm:text-3xl font-bold text-[#071A2B] tracking-tight">
-                    {formattedPrice}
+              {/* Discovery & Pre-sell Information Box */}
+              <div className="py-4.5 px-4 bg-[#FDFBF7] border border-[#071A2B]/10 rounded-xs my-5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-sans font-semibold uppercase tracking-[0.18em] text-[#8A6726]">
+                    Curadoria &amp; Oferta Oficial
                   </span>
-                  <span className="text-xs font-sans text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-xs font-medium border border-emerald-200">
-                    À vista com desconto
+                  <span className="text-[10px] font-sans text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-xs border border-emerald-200 font-medium">
+                    Link Direto Verificado
                   </span>
                 </div>
-                {product.priceRangeLabel && (
-                  <p className="text-xs font-sans text-[#8A6726] mt-1.5 font-medium">
-                    {product.priceRangeLabel}
-                  </p>
-                )}
-                <p className="text-xs font-sans text-[#1C242B]/60 mt-1.5">
-                  Consulte condições de parcelamento e cupons ativos na página oficial da oferta.
+                <p className="text-xs font-sans text-[#1C242B]/75 leading-relaxed font-light">
+                  Acesse os valores atualizados, disponibilidade em estoque e condições de pagamento diretamente na página oficial do produto no anunciante parceiro.
                 </p>
+                <div className="mt-2.5 pt-2.5 border-t border-[#071A2B]/5 flex items-center gap-2 text-[11px] font-sans text-[#8A6726]">
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                  <span>Ambiente seguro &bull; Transação realizada na plataforma oficial parceira</span>
+                </div>
               </div>
 
               {/* Short description */}
@@ -320,17 +322,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
 
               {/* Quantity and Actions */}
               <div className="space-y-3 pt-2">
-                {/* Primary Buy Now Button (Direct to official partner store) */}
+                {/* Primary Official Offer Button (Direct to official partner store) */}
                 <a
                   href={product.buyUrl || 'https://s.shopee.com.br/112vcBEklr'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-4 bg-[#071A2B] hover:bg-[#0D263D] text-[#F5F0E8] text-xs sm:text-sm font-sans tracking-[0.2em] uppercase font-semibold rounded-xs transition-all duration-200 flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg border border-[#C89A4B]/40 group"
+                  className="w-full py-4 bg-[#071A2B] hover:bg-[#C89A4B] text-[#F5F0E8] hover:text-[#071A2B] text-xs sm:text-sm font-sans tracking-[0.2em] uppercase font-semibold rounded-xs transition-all duration-200 flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg border border-[#C89A4B]/40 group"
                 >
-                  <span className="group-hover:text-[#E0B866] transition-colors">
-                    COMPRAR NA LOJA OFICIAL
+                  <span>
+                    Ver oferta oficial
                   </span>
-                  <ExternalLink className="w-4 h-4 text-[#E0B866]" />
+                  <ExternalLink className="w-4 h-4 text-[#E0B866] group-hover:text-[#071A2B] transition-colors" />
                 </a>
 
                 {/* Secondary Contact action */}
@@ -379,24 +381,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug }) =>
             </h2>
 
             <div className="divide-y divide-[#071A2B]/10 border-y border-[#071A2B]/10 text-xs font-sans">
-              {Object.entries(product.specifications).map(([key, val]) => (
+              {product.specifications && Object.entries(product.specifications).map(([key, val]) => (
                 <div key={key} className="py-2.5 flex justify-between gap-4">
                   <span className="text-[#1C242B]/60 font-light">{key}</span>
                   <span className="text-[#071A2B] font-medium text-right">{val}</span>
                 </div>
               ))}
-              <div className="py-2.5 flex justify-between gap-4">
-                <span className="text-[#1C242B]/60 font-light">Dimensões (L x A x P)</span>
-                <span className="text-[#071A2B] font-medium text-right">
-                  {product.dimensions.width} &times; {product.dimensions.height} &times; {product.dimensions.depth}
-                </span>
-              </div>
-              <div className="py-2.5 flex justify-between gap-4">
-                <span className="text-[#1C242B]/60 font-light">Peso Líquido</span>
-                <span className="text-[#071A2B] font-medium text-right">
-                  {product.dimensions.weight}
-                </span>
-              </div>
+              {product.dimensions && (
+                <>
+                  <div className="py-2.5 flex justify-between gap-4">
+                    <span className="text-[#1C242B]/60 font-light">Dimensões (L x A x P)</span>
+                    <span className="text-[#071A2B] font-medium text-right">
+                      {product.dimensions.width} &times; {product.dimensions.height} &times; {product.dimensions.depth}
+                    </span>
+                  </div>
+                  <div className="py-2.5 flex justify-between gap-4">
+                    <span className="text-[#1C242B]/60 font-light">Peso Líquido</span>
+                    <span className="text-[#071A2B] font-medium text-right">
+                      {product.dimensions.weight}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

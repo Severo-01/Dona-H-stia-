@@ -17,34 +17,37 @@ import { DeveloperPage } from './pages/DeveloperPage';
 const AppContent: React.FC = () => {
   const { currentPath } = useNavigation();
 
+  // Normalize path by removing query string, hashes and trailing slashes
+  const cleanPath = (currentPath || '/').split('?')[0].split('#')[0].replace(/\/+$/, '') || '/';
+
   // Render current view based on path
   const renderCurrentView = () => {
-    if (currentPath === '/' || currentPath === '') {
+    if (cleanPath === '/' || cleanPath === '') {
       return <HomePage />;
     }
-    if (currentPath === '/produtos') {
+    if (cleanPath === '/produtos') {
       return <ProductsPage />;
     }
-    if (currentPath === '/categorias') {
+    if (cleanPath === '/categorias') {
       return <CategoriesPage />;
     }
-    if (currentPath.startsWith('/produto/')) {
-      const slug = currentPath.replace('/produto/', '');
+    if (cleanPath.startsWith('/produto/')) {
+      const slug = cleanPath.replace('/produto/', '');
       return <ProductDetailPage slug={slug} />;
     }
-    if (currentPath.startsWith('/desenvolvedor') || currentPath.startsWith('/developer')) {
+    if (cleanPath.startsWith('/desenvolvedor') || cleanPath.startsWith('/developer')) {
       return <DeveloperPage />;
     }
-    if (currentPath === '/sobre') {
+    if (cleanPath === '/sobre') {
       return <AboutPage />;
     }
-    if (currentPath === '/contato') {
+    if (cleanPath === '/contato') {
       return <ContactPage />;
     }
-    if (currentPath === '/politica-de-privacidade') {
+    if (cleanPath === '/politica-de-privacidade') {
       return <PrivacyPolicyPage />;
     }
-    if (currentPath === '/termos') {
+    if (cleanPath === '/termos') {
       return <TermsPage />;
     }
     return <HomePage />;

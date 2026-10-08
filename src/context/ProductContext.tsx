@@ -477,8 +477,9 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       productType: data.productType || 'Eletrodomésticos',
       price: Number(data.price) || 0,
       priceMax: data.priceMax ? Number(data.priceMax) : undefined,
-      priceRangeLabel: data.priceRangeLabel || undefined,
-      originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
+      priceRangeLabel: data.priceRangeLabel?.trim() || undefined,
+      originalPrice: data.originalPrice && Number(data.originalPrice) > 0 ? Number(data.originalPrice) : undefined,
+      installmentText: data.installmentText?.trim() || undefined,
       badge: data.badge || undefined,
       rating: data.rating !== undefined ? Number(data.rating) : 5.0,
       reviewCount: data.reviewCount !== undefined ? Number(data.reviewCount) : 1,
@@ -558,10 +559,15 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
           slug: cleanSlug || p.slug,
           buyUrl: cleanBuyUrl !== undefined ? cleanBuyUrl : p.buyUrl,
           price: updatedData.price !== undefined ? Number(updatedData.price) : p.price,
-          originalPrice: updatedData.originalPrice !== undefined ? (updatedData.originalPrice ? Number(updatedData.originalPrice) : undefined) : p.originalPrice,
-          priceRangeLabel: updatedData.priceRangeLabel !== undefined
-            ? (updatedData.priceRangeLabel ? updatedData.priceRangeLabel.trim() : undefined)
+          originalPrice: 'originalPrice' in updatedData
+            ? (updatedData.originalPrice && Number(updatedData.originalPrice) > 0 ? Number(updatedData.originalPrice) : undefined)
+            : p.originalPrice,
+          priceRangeLabel: 'priceRangeLabel' in updatedData
+            ? (updatedData.priceRangeLabel && updatedData.priceRangeLabel.trim() ? updatedData.priceRangeLabel.trim() : undefined)
             : p.priceRangeLabel,
+          installmentText: 'installmentText' in updatedData
+            ? (updatedData.installmentText && updatedData.installmentText.trim() ? updatedData.installmentText.trim() : undefined)
+            : p.installmentText,
           rating: updatedData.rating !== undefined ? Number(updatedData.rating) : p.rating,
           reviewCount: updatedData.reviewCount !== undefined ? Number(updatedData.reviewCount) : p.reviewCount,
           updatedAt: new Date().toISOString(),

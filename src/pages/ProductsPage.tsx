@@ -14,15 +14,12 @@ export const ProductsPage: React.FC = () => {
   );
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [selectedProductType, setSelectedProductType] = useState<string>('all');
-  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('relevance');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   // Sync if navigation context changes category
   useEffect(() => {
-    if (selectedCategoryFilter) {
-      setSelectedCategory(selectedCategoryFilter);
-    }
+    setSelectedCategory(selectedCategoryFilter || 'all');
   }, [selectedCategoryFilter]);
 
   // Unique product types and brands
@@ -73,22 +70,11 @@ export const ProductsPage: React.FC = () => {
       list = list.filter((p) => p.productType === selectedProductType);
     }
 
-    // Price range filter
-    if (selectedPriceRange === 'under-1000') {
-      list = list.filter((p) => p.price < 1000);
-    } else if (selectedPriceRange === '1000-3000') {
-      list = list.filter((p) => p.price >= 1000 && p.price <= 3000);
-    } else if (selectedPriceRange === '3000-6000') {
-      list = list.filter((p) => p.price > 3000 && p.price <= 6000);
-    } else if (selectedPriceRange === 'above-6000') {
-      list = list.filter((p) => p.price > 6000);
-    }
-
     // Sorting
-    if (sortBy === 'price-asc') {
-      list.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      list.sort((a, b) => b.price - a.price);
+    if (sortBy === 'rating') {
+      list.sort((a, b) => (b.rating || 5) - (a.rating || 5));
+    } else if (sortBy === 'name-asc') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === 'newest') {
       list.reverse();
     }
@@ -99,7 +85,6 @@ export const ProductsPage: React.FC = () => {
     selectedCategory,
     selectedBrand,
     selectedProductType,
-    selectedPriceRange,
     sortBy,
   ]);
 
@@ -108,7 +93,6 @@ export const ProductsPage: React.FC = () => {
     setSelectedCategoryFilter(null);
     setSelectedBrand('all');
     setSelectedProductType('all');
-    setSelectedPriceRange('all');
     setSearchQuery('');
     setSortBy('relevance');
   };
@@ -117,7 +101,6 @@ export const ProductsPage: React.FC = () => {
     selectedCategory !== 'all' ||
     selectedBrand !== 'all' ||
     selectedProductType !== 'all' ||
-    selectedPriceRange !== 'all' ||
     searchQuery.trim().length > 0;
 
   return (
@@ -215,19 +198,6 @@ export const ProductsPage: React.FC = () => {
               ))}
             </select>
 
-            {/* Price Range */}
-            <select
-              value={selectedPriceRange}
-              onChange={(e) => setSelectedPriceRange(e.target.value)}
-              className="text-xs font-sans px-3 py-2 bg-[#F5F0E8] border border-[#071A2B]/15 text-[#071A2B] rounded-xs focus:outline-hidden focus:border-[#C89A4B]"
-            >
-              <option value="all">Todas as Faixas de Preço</option>
-              <option value="under-1000">Até R$ 1.000</option>
-              <option value="1000-3000">R$ 1.000 a R$ 3.000</option>
-              <option value="3000-6000">R$ 3.000 a R$ 6.000</option>
-              <option value="above-6000">Acima de R$ 6.000</option>
-            </select>
-
             {/* Product Type */}
             <select
               value={selectedProductType}
@@ -263,9 +233,9 @@ export const ProductsPage: React.FC = () => {
               className="text-xs font-sans px-3 py-2 bg-[#F5F0E8] border border-[#071A2B]/15 text-[#071A2B] rounded-xs focus:outline-hidden focus:border-[#C89A4B]"
             >
               <option value="relevance">Mais relevantes</option>
-              <option value="price-asc">Menor preço</option>
-              <option value="price-desc">Maior preço</option>
+              <option value="rating">Melhor avaliação</option>
               <option value="newest">Mais recentes</option>
+              <option value="name-asc">Ordem alfabética (A-Z)</option>
             </select>
           </div>
         </div>
@@ -314,18 +284,19 @@ export const ProductsPage: React.FC = () => {
 
             <div>
               <label className="text-xs font-sans text-[#1C242B]/70 block mb-1">
-                Faixa de Preço
+                Tipo de Produto
               </label>
               <select
-                value={selectedPriceRange}
-                onChange={(e) => setSelectedPriceRange(e.target.value)}
+                value={selectedProductType}
+                onChange={(e) => setSelectedProductType(e.target.value)}
                 className="w-full text-xs font-sans p-2.5 bg-[#F5F0E8] border border-[#071A2B]/15 text-[#071A2B]"
               >
-                <option value="all">Todas as Faixas de Preço</option>
-                <option value="under-1000">Até R$ 1.000</option>
-                <option value="1000-3000">R$ 1.000 a R$ 3.000</option>
-                <option value="3000-6000">R$ 3.000 a R$ 6.000</option>
-                <option value="above-6000">Acima de R$ 6.000</option>
+                <option value="all">Todos os Tipos</option>
+                {productTypes.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
               </select>
             </div>
 
